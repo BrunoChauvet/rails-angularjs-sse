@@ -1,0 +1,10 @@
+<div id="shares" class="container shares" ng-controller="SharesCtrl" ng-init="init()">
+  
+	<div ng-repeat="entry in entries" class="share-container">
+	  	<div class="share-code">{{entry.company.code}}</div>
+	    <div class="share-name">{{entry.company.name}}</div>
+	  	<div class="share-value">${{entry.share.value}}</div>
+	  	<div class="share-variation"><img ng-src="{{entry.variation == 'up' && 'up.png' || 'down.png'}}"/></div>
+	</div>
+
+</div>
