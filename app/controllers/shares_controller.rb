@@ -11,39 +11,31 @@ class SharesController < ApplicationController
         begin
           loop do
             Share.uncached do
-              generate_shares
-              response.stream.write "data: #{current_prices.to_json}\n\n"
+              response.stream.write "data: #{generate_new_values.to_json}\n\n"
             end
             sleep 5.second
           end
-        rescue IOError
+        rescue IOError # Raised when browser interrupts the connection
         ensure
-          response.stream.close
+          response.stream.close # Prevents stream from being open forever
         end
       }
     end
   end
 
 private
-  def generate_shares
+  def generate_new_values
     now = Time.now
-    companies = Company.all
-    companies.each do |company|
-      last_share = Share.where(company: company).order('timestamp DESC').first
-      new_value = last_share.value + (rand().round(2) - 0.5)
-      Share.create(company: company, value: new_value, timestamp: Time.now)
-    end
-  end
+    current_values = []
 
-  def current_prices
-    current_prices = []
     companies = Company.all(order: :code)
     companies.each do |company|
-      share = Share.where(company: company).order('timestamp DESC').first
-      previous_share = Share.where('company_id = ? AND timestamp < ?', company.id, share.timestamp).order('timestamp DESC').first
+      previous_share = Share.where(company: company).order('timestamp DESC').first
+      new_value = previous_share.value + (rand().round(2) - 0.5)
+      share = Share.create(company: company, value: new_value, timestamp: Time.now)
       variation = share.value > previous_share.value ? 'up' : 'down'
-      current_prices << {company: company, share: share, variation: variation}
+      current_values << {company: company, share: share, variation: variation}
     end
-    current_prices
+    current_values
   end
 end

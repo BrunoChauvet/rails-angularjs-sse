@@ -1,7 +1,7 @@
-var shareModule = angular.module('shares', ['ngResource']);
+var shareModule = angular.module('shares', []);
 
-shareModule.factory('Shares', function($resource) {
-  return $resource('/shares/:id');
+shareModule.factory('Shares', function() {
+  return {};
 });
 
 shareModule.controller('SharesCtrl', function($scope, Shares) {

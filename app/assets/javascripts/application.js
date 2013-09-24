@@ -12,5 +12,4 @@
 //
 //= require jquery.min
 //= require angular.min
-//= require angular-resource.min
 //= require share
